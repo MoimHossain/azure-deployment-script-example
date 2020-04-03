@@ -1,0 +1,60 @@
+{
+ "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+ "contentVersion": "1.0.0.0",
+ "parameters": {
+   "identity": {
+     "type": "string",
+     "defaultValue": "/subscriptions/5db218ce-c9b4-4cca-9d16-058d3354c640/resourceGroups/cloudoven-managed-identities/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cloudoven-aad-appreg-admin"
+   },
+   "appName": {
+     "type": "string",
+     "defaultValue": "tailspin-demo-westeurope-001"
+   },
+   "utcValue": {
+     "type": "string",
+     "defaultValue": "[utcNow()]"
+   }
+ },
+ "variables": {
+   "aadAppUri": "[concat('https://', parameters('appName'), 'azurewebsites.net')]",
+   "aadAppRedirectUri": "[concat('https://', parameters('appName'), 'azurewebsites.net/signin-oidc')]",
+   "cliArg": "[concat(parameters('appName'), ' ', variables('aadAppUri'), ' ', variables('aadAppRedirectUri'))]"
+  //  "cliArg": "[concat(parameters('appName'), ' ', 'https://XY00wre.com', ' ', 'https://XY00wre.com/signin-oidc')]"
+ },
+ "resources": [
+   {
+     "type": "Microsoft.Resources/deploymentScripts",
+     "apiVersion": "2019-10-01-preview",
+     "name": "AzCLIAppRegScriptResourceTest",
+     "location": "[resourceGroup().location]",
+     "kind": "AzureCLI",
+     "identity": {
+       "type": "UserAssigned",
+       "userAssignedIdentities": {
+         "[parameters('identity')]": {
+         }
+       }
+     },
+     "properties": {
+       "forceUpdateTag": "[parameters('utcValue')]",
+       "AzCliVersion": "2.0.80",
+       "timeout": "PT30M",
+       "arguments": "[variables('cliArg')]",
+       "scriptContent": "
+       
+        appInfo=$(az ad app create --display-name $1 --identifier-uris \"$2\" --reply-urls \"$3\")
+        echo $appInfo > $AZ_SCRIPTS_OUTPUT_PATH
+       
+       ",
+       "cleanupPreference": "OnSuccess",
+       "retentionInterval": "P1D"
+     }
+   }
+ ],
+ "outputs": {
+   "result": {
+     "value": "[reference('AzCLIAppRegScriptResourceTest').outputs]",
+     "type": "object"
+   }
+ }
+}
