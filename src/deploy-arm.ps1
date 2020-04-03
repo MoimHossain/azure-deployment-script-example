@@ -2,5 +2,5 @@ $resourceGroupName = "tailwind-resources-we"
 
 
 
-New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
-  -TemplateFile .\cli-azure-deploy.json
+New-AzResourceGroupDeployment -WhatIf -ResourceGroupName $resourceGroupName `
+  -TemplateFile .\cli-azure-deploy.json 
