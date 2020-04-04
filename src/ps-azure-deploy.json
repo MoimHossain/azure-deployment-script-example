@@ -4,7 +4,7 @@
  "parameters": {
    "identity": {
      "type": "string",
-     "defaultValue": "/subscriptions/5db218ce-c9b4-4cca-9d16-058d3354c640/resourceGroups/cloudoven-managed-identities/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cloudoven-aad-appreg-admin"
+     "defaultValue": "/subscriptions/058d3354c640/resourceGroups/cloudoven-managed-identities/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cloudoven-aad-appreg-admin"
    },
    "name":{
      "type": "string",
